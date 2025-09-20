@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Patient Dashboard - VitalCircle{% endblock title %}
+
+{% block content %}
+<div class="container-fluid py-4">
+
+    <!-- Welcome Header with Context-Aware Nudge -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center flex-wrap">
+                <div>
+                    <h1 class="display-6 text-success mb-2">
+                        <i class="ri-heart-pulse-line me-2"></i>
+                        Welcome back, {{ user.first_name|default:user.username }}!
+                    </h1>
+                    <p class="text-muted">Your health journey continues today</p>
+                </div>
+                {% if nudge %}
+                <div class="alert alert-info alert-dismissible fade show mt-2 mt-md-0" role="alert">
+                    <i class="ri-lightbulb-line me-2"></i>
+                    <strong>Smart Nudge:</strong> {{ nudge.message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <section class="quick-actions mb-4">
+        <div class="btn-group" role="group">
+            <button class="btn btn-outline-success" onclick="window.location.href=''">+ Today's Log</button>
+            <button class="btn btn-outline-primary" onclick="window.location.href=''">Stability Score</button>
+            <button class="btn btn-outline-secondary" onclick="window.location.href=''">Doctor Connect</button>
+            <button class="btn btn-outline-info" onclick="window.location.href=''">Join Community</button>
+            <button class="btn btn-outline-warning" onclick="window.location.href=''">My Goals</button>
+        </div>
+    </section>
+
+    <!-- Stability Overview -->
+    <section class="stability-overview mb-4">
+        <h2>Stability Overview</h2>
+        {% if stability %}
+            <div id="stabilityChartContainer" data-score="{{ stability.score_value|default:0 }}">
+                <canvas id="stabilityChart" width="200" height="200"></canvas>
+            </div>
+            <p class="mt-2">{{ stability.risk_prediction }}</p>
+        {% else %}
+            <p>No stability data available yet.</p>
+        {% endif %}
+    </section>
+
+    <!-- Doctor Updates -->
+    <section class="clinician-updates mb-4">
+        <h2>Doctor Updates</h2>
+        {% for action in clinician_actions %}
+            <div class="card p-3 mb-2">
+                <strong>{{ action.get_action_type_display }}:</strong> {{ action.action_text }}
+                {% if not action.acknowledged_by_patient %}
+                    <form method="post" action="">
+                        {% csrf_token %}
+                        <button class="btn btn-sm btn-success mt-2">Acknowledge</button>
+                    </form>
+                {% endif %}
+            </div>
+        {% empty %}
+            <p>No recent updates.</p>
+        {% endfor %}
+    </section>
+
+    <!-- Community Highlights -->
+    <section class="community-highlights mb-4">
+        <h2>Community Highlights</h2>
+        {% for post in posts %}
+            <div class="card p-3 mb-2">
+                <strong>{{ post.user.first_name|default:post.user.username }}:</strong> {{ post.content }}
+                <a href="" class="btn btn-sm btn-outline-primary mt-2">Join Discussion</a>
+            </div>
+        {% empty %}
+            <p>No posts yet.</p>
+        {% endfor %}
+    </section>
+
+    <!-- Goals & Achievements -->
+    <section class="goals-dashboard mb-4">
+        <h2>Goals & Achievements</h2>
+
+        <h4>Goals</h4>
+        {% for goal in goals %}
+            <p>{{ goal.get_goal_type_display }} - Target: {{ goal.target_value }} {{ goal.unit }}</p>
+        {% empty %}
+            <p>No goals set.</p>
+        {% endfor %}
+
+        <h4>Achievements</h4>
+        {% for ach in achievements %}
+            <p>{{ ach.title }} - {{ ach.description }}</p>
+        {% empty %}
+            <p>No achievements yet.</p>
+        {% endfor %}
+    </section>
+
+</div>
+
+<!-- Dashboard-specific JS -->
+<script src="{% static 'dashboard.js' %}"></script>
+{% endblock content %}

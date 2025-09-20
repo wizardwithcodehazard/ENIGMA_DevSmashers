@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'core'
+    'core',
+    'users'
 ]
 
 MIDDLEWARE = [
@@ -123,3 +124,11 @@ STATICFILES_DIRS = [BASE_DIR / "vitalcircle" / "static"]
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Custom User Model
+AUTH_USER_MODEL = 'users.User'
+
+# Login/Logout URLs
+LOGIN_URL = 'users:login'
+LOGIN_REDIRECT_URL = 'core:user-dashboard'
+LOGOUT_REDIRECT_URL = 'users:login'

@@ -4,37 +4,29 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import (
     UserProfile, DailyLog, StabilityScore, Nudge, ClinicianAction,
-    ForumPost, UserGoal, Achievement, SupportGroup, GroupMembership
+    ForumPost, UserGoal, Achievement, SupportGroup, GroupMembership,
+    Clinician
 )
 
 # --------------------------
-# Login View
+# Home View
 # --------------------------
-def login_view(request):
-    if request.method == "POST":
-        email = request.POST.get("email")
-        password = request.POST.get("password")
-        user = authenticate(request, username=email, password=password)
-        if user:
-            login(request, user)
-            return redirect("dashboard")
-        else:
-            messages.error(request, "Invalid email or password.")
-    return render(request, "login.html")
 
-
-# --------------------------
-# Logout View
-# --------------------------
-def logout_view(request):
-    logout(request)
-    return redirect("login")
-
+def home_view(request):
+    """Home page view - shows landing page for unauthenticated users"""
+    if request.user.is_authenticated:
+        # Redirect authenticated users to their appropriate dashboard
+        if request.user.is_doctor:
+            return redirect('core:doctor-dashboard')
+        elif request.user.is_user:
+            return redirect('core:user-dashboard')
+    return render(request, 'home.html')
 
 # --------------------------
 # Dashboard View
 # --------------------------
 
+@login_required
 def dashboard_view(request):
     user = request.user
     profile = UserProfile.objects.filter(user=user).first()
@@ -70,4 +62,13 @@ def dashboard_view(request):
         "achievements": achievements,
     }
 
-    return render(request, "dashboard.html", context)
+    return render(request, "user-dashboard.html", context)
+
+@login_required
+def doctor_dashboard_view(request):
+    user = request.user
+    profile = Clinician.objects.filter(user=user).first()
+    context = {
+        "profile": profile,
+    }
+    return render(request, "doctor-dashboard.html")
