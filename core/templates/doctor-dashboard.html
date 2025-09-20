@@ -1,0 +1,309 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Doctor Dashboard - VitalCircle{% endblock title %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card bg-gradient-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex text-black justify-content-between align-items-center">
+                        <div>
+                            <h2 class="mb-1">
+                                <i class="ri-stethoscope-line me-2"></i>
+                                Doctor Dashboard
+                            </h2>
+                            <p class="mb-0">Welcome back, Dr. {{ user.first_name|default:user.username }}</p>
+                        </div>
+                        <div class="text-end">
+                            <div class="d-flex align-items-center">
+                                <i class="ri-user-line me-2"></i>
+                                <span>{{ user.get_full_name|default:user.username }}</span>
+                            </div>
+                            <small class="opacity-75">Last login: {{ user.last_login|date:"M d, Y g:i A" }}</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="row mb-4">
+        <div class="col-md-3 col-6 mb-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="ri-user-line text-primary mb-2" style="font-size: 2rem;"></i>
+                    <h4 class="mb-1">1</h4>
+                    <p class="text-muted mb-0">Active Patients</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6 mb-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="ri-calendar-line text-success mb-2" style="font-size: 2rem;"></i>
+                    <h4 class="mb-1">5</h4>
+                    <p class="text-muted mb-0">Today's Appointments</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6 mb-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="ri-alert-line text-warning mb-2" style="font-size: 2rem;"></i>
+                    <h4 class="mb-1">2</h4>
+                    <p class="text-muted mb-0">Critical Alerts</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6 mb-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="ri-file-text-line text-info mb-2" style="font-size: 2rem;"></i>
+                    <h4 class="mb-1">12</h4>
+                    <p class="text-muted mb-0">Reports Generated</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Patient List -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="ri-user-line me-2"></i>
+                        Patient Overview
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- Dummy Patient: rajnish1 -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="card border-primary">
+                                <div class="card-header bg-light">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h6 class="mb-0 text-primary">
+                                            <i class="ri-user-line me-2"></i>
+                                            Patient: rajnish1
+                                        </h6>
+                                        <span class="badge bg-success">Active</span>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <!-- Patient Basic Info -->
+                                        <div class="col-md-4">
+                                            <h6 class="text-muted mb-3">Basic Information</h6>
+                                            <div class="mb-2">
+                                                <strong>Name:</strong> Rajnish Kumar
+                                            </div>
+                                            <div class="mb-2">
+                                                <strong>Age:</strong> 28 years
+                                            </div>
+                                            <div class="mb-2">
+                                                <strong>Gender:</strong> Male
+                                            </div>
+                                            <div class="mb-2">
+                                                <strong>Contact:</strong> +91-9876543210
+                                            </div>
+                                            <div class="mb-2">
+                                                <strong>Email:</strong> rajnish1@example.com
+                                            </div>
+                                        </div>
+
+                                        <!-- Health Metrics -->
+                                        <div class="col-md-4">
+                                            <h6 class="text-muted mb-3">Current Health Metrics</h6>
+                                            <div class="mb-2">
+                                                <strong>Weight:</strong> 75 kg
+                                            </div>
+                                            <div class="mb-2">
+                                                <strong>Height:</strong> 175 cm
+                                            </div>
+                                            <div class="mb-2">
+                                                <strong>BMI:</strong> 24.5 (Normal)
+                                            </div>
+                                            <div class="mb-2">
+                                                <strong>Blood Pressure:</strong> 120/80 mmHg
+                                            </div>
+                                            <div class="mb-2">
+                                                <strong>Heart Rate:</strong> 72 BPM
+                                            </div>
+                                            <div class="mb-2">
+                                                <strong>Blood Glucose:</strong> 95 mg/dL
+                                            </div>
+                                        </div>
+
+                                        <!-- Medical History -->
+                                        <div class="col-md-4">
+                                            <h6 class="text-muted mb-3">Medical History</h6>
+                                            <div class="mb-2">
+                                                <strong>Primary Condition:</strong> Type 2 Diabetes
+                                            </div>
+                                            <div class="mb-2">
+                                                <strong>Diagnosis Date:</strong> Jan 15, 2023
+                                            </div>
+                                            <div class="mb-2">
+                                                <strong>Last HbA1c:</strong> 6.8%
+                                            </div>
+                                            <div class="mb-2">
+                                                <strong>Medications:</strong> Metformin 500mg
+                                            </div>
+                                            <div class="mb-2">
+                                                <strong>Allergies:</strong> None known
+                                            </div>
+                                            <div class="mb-2">
+                                                <strong>Smoking Status:</strong> Non-smoker
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Recent Activity -->
+                                    <div class="row mt-4">
+                                        <div class="col-12">
+                                            <h6 class="text-muted mb-3">Recent Activity & Logs</h6>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="card bg-light">
+                                                        <div class="card-body">
+                                                            <h6 class="card-title text-primary">
+                                                                <i class="ri-calendar-check-line me-2"></i>
+                                                                Today's Log (Sep 20, 2025)
+                                                            </h6>
+                                                            <div class="row">
+                                                                <div class="col-6">
+                                                                    <small class="text-muted">Weight</small>
+                                                                    <div class="fw-bold">75.2 kg</div>
+                                                                </div>
+                                                                <div class="col-6">
+                                                                    <small class="text-muted">Blood Pressure</small>
+                                                                    <div class="fw-bold">118/78 mmHg</div>
+                                                                </div>
+                                                                <div class="col-6">
+                                                                    <small class="text-muted">Heart Rate</small>
+                                                                    <div class="fw-bold">68 BPM</div>
+                                                                </div>
+                                                                <div class="col-6">
+                                                                    <small class="text-muted">Blood Glucose</small>
+                                                                    <div class="fw-bold">92 mg/dL</div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="mt-2">
+                                                                <small class="text-muted">Notes:</small>
+                                                                <div class="small">Feeling good today, no symptoms reported. Exercised for 30 minutes.</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="card bg-light">
+                                                        <div class="card-body">
+                                                            <h6 class="card-title text-success">
+                                                                <i class="ri-line-chart-line me-2"></i>
+                                                                Stability Score
+                                                            </h6>
+                                                            <div class="text-center">
+                                                                <div class="display-6 text-success fw-bold">8.5/10</div>
+                                                                <p class="text-muted mb-2">Excellent</p>
+                                                                <div class="progress" style="height: 8px;">
+                                                                    <div class="progress-bar bg-success" style="width: 85%"></div>
+                                                                </div>
+                                                                <small class="text-muted">Last updated: Sep 20, 2025</small>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Action Buttons -->
+                                    <div class="row mt-4">
+                                        <div class="col-12">
+                                            <div class="d-flex gap-2 flex-wrap">
+                                                <button class="btn btn-primary">
+                                                    <i class="ri-file-text-line me-2"></i>View Full Report
+                                                </button>
+                                                <button class="btn btn-success">
+                                                    <i class="ri-message-line me-2"></i>Send Message
+                                                </button>
+                                                <button class="btn btn-warning">
+                                                    <i class="ri-calendar-line me-2"></i>Schedule Appointment
+                                                </button>
+                                                <button class="btn btn-info">
+                                                    <i class="ri-pencil-line me-2"></i>Update Prescription
+                                                </button>
+                                                <button class="btn btn-secondary">
+                                                    <i class="ri-download-line me-2"></i>Export Data
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- No other patients message -->
+                    <div class="text-center py-4">
+                        <i class="ri-user-add-line display-1 text-muted mb-3"></i>
+                        <h5 class="text-muted">No Other Patients</h5>
+                        <p class="text-muted">More patients will appear here as they register and connect with you.</p>
+                        <button class="btn btn-primary">
+                            <i class="ri-user-add-line me-2"></i>Add New Patient
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="ri-settings-3-line me-2"></i>
+                        Quick Actions
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 col-6 mb-3">
+                            <button class="btn btn-outline-primary w-100">
+                                <i class="ri-file-text-line me-2"></i>
+                                Generate Report
+                            </button>
+                        </div>
+                        <div class="col-md-3 col-6 mb-3">
+                            <button class="btn btn-outline-success w-100">
+                                <i class="ri-calendar-line me-2"></i>
+                                Schedule Appointment
+                            </button>
+                        </div>
+                        <div class="col-md-3 col-6 mb-3">
+                            <button class="btn btn-outline-warning w-100">
+                                <i class="ri-message-line me-2"></i>
+                                Send Alert
+                            </button>
+                        </div>
+                        <div class="col-md-3 col-6 mb-3">
+                            <button class="btn btn-outline-info w-100">
+                                <i class="ri-download-line me-2"></i>
+                                Export Data
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -17,5 +17,9 @@ urlpatterns = [
     path('daily-log/list/', views.daily_log_list, name='daily-log-list'),
     path('daily-log/<int:log_id>/', views.daily_log_detail, name='daily-log-detail'),
     path('daily-log/<int:log_id>/edit/', views.daily_log_edit, name='daily-log-edit'),
+
+    path("goal-dashboard/", views.goal_dashboard_view, name="goal_dashboard"),
+    path("goal-data/", views.goal_data_api, name="goal_data_api"),  # for JS to fetch data
+
 ]
 
