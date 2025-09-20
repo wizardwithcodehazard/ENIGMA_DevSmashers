@@ -1,0 +1,73 @@
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from .models import (
+    UserProfile, DailyLog, StabilityScore, Nudge, ClinicianAction,
+    ForumPost, UserGoal, Achievement, SupportGroup, GroupMembership
+)
+
+# --------------------------
+# Login View
+# --------------------------
+def login_view(request):
+    if request.method == "POST":
+        email = request.POST.get("email")
+        password = request.POST.get("password")
+        user = authenticate(request, username=email, password=password)
+        if user:
+            login(request, user)
+            return redirect("dashboard")
+        else:
+            messages.error(request, "Invalid email or password.")
+    return render(request, "login.html")
+
+
+# --------------------------
+# Logout View
+# --------------------------
+def logout_view(request):
+    logout(request)
+    return redirect("login")
+
+
+# --------------------------
+# Dashboard View
+# --------------------------
+
+def dashboard_view(request):
+    user = request.user
+    profile = UserProfile.objects.filter(user=user).first()
+
+    # Latest Daily Log
+    latest_log = DailyLog.objects.filter(user=user).order_by('-log_date').first()
+
+    # Latest Stability Score
+    stability = StabilityScore.objects.filter(user=user).order_by('-score_date').first()
+
+    # Today's Nudge
+    nudge = Nudge.objects.filter(user=user).order_by('-nudge_date').first()
+
+    # Recent Clinician Actions
+    clinician_actions = ClinicianAction.objects.filter(clinician__user=user).order_by('-created_at')[:5]
+
+    # Community Highlights (recent forum posts)
+    groups = GroupMembership.objects.filter(user=user).values_list('group', flat=True)
+    posts = ForumPost.objects.filter(group__in=groups).order_by('-created_at')[:5]
+
+    # User Goals & Achievements
+    goals = UserGoal.objects.filter(user=user)
+    achievements = Achievement.objects.filter(user=user).order_by('-achieved_at')[:5]
+
+    context = {
+        "profile": profile,
+        "latest_log": latest_log,
+        "stability": stability,
+        "nudge": nudge,
+        "clinician_actions": clinician_actions,
+        "posts": posts,
+        "goals": goals,
+        "achievements": achievements,
+    }
+
+    return render(request, "dashboard.html", context)

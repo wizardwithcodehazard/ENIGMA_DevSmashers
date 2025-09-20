@@ -1,0 +1,17 @@
+body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f9f9f9; }
+header { background: #4CAF50; color: white; padding: 20px; text-align: center; }
+.nudge { background: #e7f3fe; padding: 10px; margin-top: 10px; border-left: 4px solid #2196F3; }
+
+.quick-actions { display: flex; gap: 10px; justify-content: center; margin: 20px 0; }
+.quick-actions button { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; background: #2196F3; color: white; }
+
+section { margin: 20px; padding: 10px; background: white; border-radius: 10px; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
+
+.stability-overview .score-card { text-align: center; }
+
+.clinician-updates .action-card,
+.community-highlights .post-card { border-bottom: 1px solid #ddd; padding: 10px 0; }
+.clinician-updates .action-card button,
+.community-highlights .post-card button { margin-top: 5px; padding: 5px 10px; background: #4CAF50; color: white; border: none; border-radius: 3px; cursor: pointer; }
+
+.goals-dashboard h2, .goals-dashboard h3 { margin-top: 15px; }
