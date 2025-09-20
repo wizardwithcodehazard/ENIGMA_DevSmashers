@@ -10,19 +10,20 @@ User = get_user_model()
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)  # Django Auth
-    date_of_birth = models.DateField()
-    gender = models.CharField(max_length=20, choices=[("M", "Male"), ("F", "Female"), ("O", "Other")])
+    is_filled = models.BooleanField(default=False)
+    date_of_birth = models.DateField(blank=True, null=True)
+    gender = models.CharField(max_length=20, choices=[("M", "Male"), ("F", "Female"), ("O", "Other")], blank=True, null=True)
     
-    primary_condition = models.CharField(max_length=100)
+    primary_condition = models.CharField(max_length=100, blank=True, null=True)
     secondary_conditions = models.TextField(blank=True, null=True)
     medications = models.TextField(blank=True, null=True)
     allergies = models.TextField(blank=True, null=True)
     
-    smoking_status = models.CharField(max_length=20, choices=[("Never", "Never"), ("Former", "Former"), ("Current", "Current")])
-    alcohol_consumption = models.CharField(max_length=20, choices=[("None", "None"), ("Occasional", "Occasional"), ("Regular", "Regular")])
+    smoking_status = models.CharField(max_length=20, choices=[("Never", "Never"), ("Former", "Former"), ("Current", "Current")], blank=True, null=True)
+    alcohol_consumption = models.CharField(max_length=20, choices=[("None", "None"), ("Occasional", "Occasional"), ("Regular", "Regular")], blank=True, null=True)
 
-    height_cm = models.IntegerField()
-    weight_kg = models.FloatField()
+    height_cm = models.IntegerField(blank=True, null=True)
+    weight_kg = models.FloatField(blank=True, null=True)
     blood_pressure_baseline = models.CharField(max_length=10, blank=True, null=True)
     resting_heart_rate = models.IntegerField(blank=True, null=True)
     last_hba1c = models.FloatField(blank=True, null=True)

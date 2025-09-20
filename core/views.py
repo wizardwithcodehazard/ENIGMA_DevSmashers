@@ -35,7 +35,14 @@ def home_view(request):
 @login_required
 def dashboard_view(request):
     user = request.user
-    profile = UserProfile.objects.filter(user=user).first()
+    
+    # Check if user profile is filled
+    try:
+        profile = UserProfile.objects.get(user=user)
+        if not profile.is_filled:
+            return redirect('core:complete-profile')
+    except UserProfile.DoesNotExist:
+        return redirect('core:complete-profile')
 
     # Latest Daily Log
     latest_log = DailyLog.objects.filter(user=user).order_by('-log_date').first()
@@ -85,24 +92,24 @@ def doctor_dashboard_view(request):
 
 @csrf_exempt
 def predict_patient_view(request):
-    """AI-powered health stability prediction using Groq API"""
     if request.method != "POST":
         return JsonResponse({"error": "POST request required."}, status=400)
+
 
     try:
         # Parse input JSON
         patient_data = json.loads(request.body.decode("utf-8"))
 
+
         # Groq API
-        import os
-        from dotenv import load_dotenv
-        load_dotenv()
-        GROQ_API_KEY = os.getenv('GROQ_API_KEY', 'your-groq-api-key-here')
+        GROQ_API_KEY = "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"
         url = "https://api.groq.com/openai/v1/chat/completions"
+
 
         # Prompt with escaped braces
         prompt = f"""
 You are an experienced healthcare assistant AI with over 10 years of experience explaining health insights to the general public in India.
+
 
 Task:
 - Analyze the patient data below.
@@ -110,10 +117,12 @@ Task:
   1. "stability_score": an integer between 0-100 reflecting the overall health stability of the patient.
   2. "risk_prediction": a short, easy-to-understand explanation (3-4 lines) of potential health risks for a layman. Include possible causes from lifestyle, vitals, and medications.
 
+
 Additional Instructions:
 - Provide the explanation in simple English (layman-friendly, India context) and a Hinglish version.
 - Respond ONLY in JSON.
 - Use the following JSON template (escape braces for Python f-string):
+
 
 {{
   "stability_score": 0,
@@ -123,9 +132,11 @@ Additional Instructions:
   }}
 }}
 
+
 Patient data:
 {json.dumps(patient_data, indent=2)}
 """
+
 
         headers = {
             "Authorization": f"Bearer {GROQ_API_KEY}",
@@ -136,14 +147,17 @@ Patient data:
             "messages": [{"role": "user", "content": prompt}]
         }
 
+
         response = requests.post(url, headers=headers, json=payload)
         response.raise_for_status()
         data = response.json()
 
+
         llm_output = data["choices"][0]["message"]["content"]
         cleaned = re.sub(r"```json|```", "", llm_output).strip()
 
-        # Parse inner JSON if it's returned as string
+
+        # ---- FIX: Parse inner JSON if it's returned as string ----
         try:
             parsed = json.loads(cleaned)
             # If risk_prediction is still a string, try parsing it again
@@ -157,27 +171,9 @@ Patient data:
             # fallback
             result = {"stability_score": None, "risk_prediction": cleaned}
 
-        # Store the stability score in database if user is authenticated
-        if request.user.is_authenticated and result.get("stability_score") is not None:
-            try:
-                # Create or update stability score record
-                stability_score, created = StabilityScore.objects.get_or_create(
-                    user=request.user,
-                    defaults={
-                        'score_value': result["stability_score"],
-                        'risk_prediction': json.dumps(result.get("risk_prediction", {})),
-                    }
-                )
-                if not created:
-                    # Update existing record
-                    stability_score.score_value = result["stability_score"]
-                    stability_score.risk_prediction = json.dumps(result.get("risk_prediction", {}))
-                    stability_score.save()
-            except Exception as e:
-                # Log error but don't fail the request
-                print(f"Error saving stability score: {e}")
 
         return JsonResponse(result)
+
 
     except json.JSONDecodeError:
         return JsonResponse({"error": "Invalid JSON input."}, status=400)
@@ -186,17 +182,21 @@ Patient data:
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
 
-@login_required
+
+
+
 def stability_view(request):
     """
     Render the stability.html page where the user can fill patient data
     and check health stability.
     """
     # Get user profile data to pre-fill the form
-    try:
-        profile = UserProfile.objects.get(user=request.user)
-    except UserProfile.DoesNotExist:
-        profile = None
+    profile = None
+    if request.user.is_authenticated:
+        try:
+            profile = UserProfile.objects.get(user=request.user)
+        except UserProfile.DoesNotExist:
+            profile = None
     
     context = {
         'profile': profile,
@@ -208,9 +208,35 @@ def stability_view(request):
 # --------------------------
 
 @login_required
+def complete_profile_view(request):
+    """Complete user profile - required after registration"""
+    profile, created = UserProfile.objects.get_or_create(user=request.user)
+    
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, instance=profile)
+        if form.is_valid():
+            profile = form.save(commit=False)
+            profile.user = request.user
+            profile.is_filled = True
+            profile.save()
+            messages.success(request, 'Profile completed successfully! You can now access all features.')
+            return redirect('core:user-dashboard')
+    else:
+        form = UserProfileForm(instance=profile)
+    
+    context = {
+        'form': form,
+        'profile': profile,
+    }
+    return render(request, 'complete_profile.html', context)
+
+@login_required
 def edit_profile_view(request):
     """Edit user profile information"""
-    profile, created = UserProfile.objects.get_or_create(user=request.user)
+    try:
+        profile = UserProfile.objects.get(user=request.user)
+    except UserProfile.DoesNotExist:
+        profile = UserProfile.objects.create(user=request.user, is_filled=False)
     
     if request.method == 'POST':
         form = UserProfileForm(request.POST, instance=profile)

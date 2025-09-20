@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container forum-container">
+    <h1 class="page-title">Community Forums</h1>
+    <p class="page-subtitle">Select a topic to start discussing.</p>
+    <div class="topic-list">
+        {% for topic in topics %}
+            <div class="topic-card">
+                <h2><a href="{% url 'topic_post_list' topic.slug %}">{{ topic.name }}</a></h2>
+                <p>{{ topic.description }}</p>
+            </div>
+        {% empty %}
+            <p>No topics have been created yet.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

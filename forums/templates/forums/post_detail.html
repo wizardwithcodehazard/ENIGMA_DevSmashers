@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container forum-container">
+    <div class="post-detail-card">
+        <h1 class="post-title">{{ post.title }}</h1>
+        <p class="post-meta">by {{ post.author.username }} on {{ post.created_at|date:"F d, Y" }}</p>
+        <div class="post-content">
+            {{ post.content|linebreaks }}
+        </div>
+    </div>
+
+    <div class="comments-section">
+        <h2>Comments</h2>
+        {% for comment in comments %}
+            <div class="comment-card">
+                <p class="comment-meta"><strong>{{ comment.author.username }}</strong> said on {{ comment.created_at|date:"F d, Y" }}</p>
+                <p>{{ comment.content|linebreaks }}</p>
+            </div>
+        {% empty %}
+            <p>No comments yet. Be the first to reply!</p>
+        {% endfor %}
+    </div>
+
+    <div class="comment-form-section">
+    <h3>Add a Comment</h3>
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {{ comment_form.as_p }}
+        <button type="submit" class="btn btn-primary mt-2">Post Comment</button>
+    </form>
+</div>
+     <a href="{% url 'topic_post_list' post.topic.slug %}" class="btn-back">← Back to Posts</a>
+</div>
+{% endblock %}

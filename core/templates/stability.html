@@ -1,0 +1,225 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block title %}Check Health Stability - VitalCircle{% endblock title %}
+
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="mb-4">Check Your Health Stability</h1>
+
+
+    <!-- Patient Form -->
+    {% if profile %}
+    <div class="alert alert-info alert-dismissible fade show mb-4" role="alert">
+        <i class="ri-information-line me-2"></i>
+        <strong>Profile Data Loaded!</strong> Your form has been pre-filled with your saved profile information. 
+        You can modify any fields as needed for this analysis.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endif %}
+    
+    <form id="patientForm">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label>Full Name</label>
+                <input type="text" class="form-control" name="full_name" 
+                       value="{% if user.is_authenticated %}{{ user.first_name }} {{ user.last_name }}{% endif %}" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label>Email</label>
+                <input type="email" class="form-control" name="email" 
+                       value="{% if user.is_authenticated %}{{ user.email }}{% endif %}" required>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label>Date of Birth</label>
+                <input type="date" class="form-control" name="date_of_birth" 
+                       value="{% if profile.date_of_birth %}{{ profile.date_of_birth|date:'Y-m-d' }}{% endif %}" required>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label>Gender</label>
+                <select class="form-select" name="gender">
+                    <option value="Male" {% if profile.gender == 'M' %}selected{% endif %}>Male</option>
+                    <option value="Female" {% if profile.gender == 'F' %}selected{% endif %}>Female</option>
+                    <option value="Other" {% if profile.gender == 'O' %}selected{% endif %}>Other</option>
+                </select>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label>Primary Condition</label>
+                <input type="text" class="form-control" name="primary_condition" 
+                       value="{{ profile.primary_condition|default:'' }}">
+            </div>
+        </div>
+
+
+        <!-- Example for secondary conditions, medications, allergies -->
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label>Secondary Conditions (comma separated)</label>
+                <input type="text" class="form-control" name="secondary_conditions" 
+                       value="{{ profile.secondary_conditions|default:'' }}">
+            </div>
+            <div class="col-md-4 mb-3">
+                <label>Medications (comma separated)</label>
+                <input type="text" class="form-control" name="medications" 
+                       value="{{ profile.medications|default:'' }}">
+            </div>
+            <div class="col-md-4 mb-3">
+                <label>Allergies (comma separated)</label>
+                <input type="text" class="form-control" name="allergies" 
+                       value="{{ profile.allergies|default:'' }}">
+            </div>
+        </div>
+
+
+        <!-- Vitals -->
+        <div class="row">
+            <div class="col-md-3 mb-3">
+                <label>Height (cm)</label>
+                <input type="number" class="form-control" name="height_cm" 
+                       value="{{ profile.height_cm|default:'' }}">
+            </div>
+            <div class="col-md-3 mb-3">
+                <label>Weight (kg)</label>
+                <input type="number" class="form-control" name="weight_kg" 
+                       value="{{ profile.weight_kg|default:'' }}">
+            </div>
+            <div class="col-md-3 mb-3">
+                <label>Systolic BP</label>
+                <input type="number" class="form-control" name="systolic_bp">
+            </div>
+            <div class="col-md-3 mb-3">
+                <label>Diastolic BP</label>
+                <input type="number" class="form-control" name="diastolic_bp">
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-3 mb-3">
+                <label>Heart Rate</label>
+                <input type="number" class="form-control" name="heart_rate" 
+                       value="{{ profile.resting_heart_rate|default:'' }}">
+            </div>
+            <div class="col-md-3 mb-3">
+                <label>Blood Glucose</label>
+                <input type="number" class="form-control" name="blood_glucose">
+            </div>
+            <div class="col-md-3 mb-3">
+                <label>Sleep Hours</label>
+                <input type="number" class="form-control" name="sleep_hours" step="0.1">
+            </div>
+            <div class="col-md-3 mb-3">
+                <label>Exercise Minutes</label>
+                <input type="number" class="form-control" name="exercise_minutes">
+            </div>
+        </div>
+
+
+        <!-- Lifestyle -->
+        <div class="row">
+            <div class="col-md-3 mb-3">
+                <label>Smoking Status</label>
+                <select class="form-select" name="smoking_status">
+                    <option value="Never" {% if profile.smoking_status == 'Never' %}selected{% endif %}>Never</option>
+                    <option value="Former" {% if profile.smoking_status == 'Former' %}selected{% endif %}>Former</option>
+                    <option value="Current" {% if profile.smoking_status == 'Current' %}selected{% endif %}>Current</option>
+                </select>
+            </div>
+            <div class="col-md-3 mb-3">
+                <label>Alcohol Consumption</label>
+                <select class="form-select" name="alcohol_consumption">
+                    <option value="None" {% if profile.alcohol_consumption == 'None' %}selected{% endif %}>None</option>
+                    <option value="Occasional" {% if profile.alcohol_consumption == 'Occasional' %}selected{% endif %}>Occasional</option>
+                    <option value="Regular" {% if profile.alcohol_consumption == 'Regular' %}selected{% endif %}>Regular</option>
+                </select>
+            </div>
+            <div class="col-md-3 mb-3">
+                <label>Stress Level (0-5)</label>
+                <input type="number" class="form-control" name="stress_level" min="0" max="5">
+            </div>
+            <div class="col-md-3 mb-3">
+                <label>Water Intake (Liters)</label>
+                <input type="number" class="form-control" name="water_intake_liters" step="0.1">
+            </div>
+        </div>
+
+
+        <div class="mb-3">
+            <label>Symptoms</label>
+            <textarea class="form-control" name="symptoms"></textarea>
+        </div>
+
+
+        <div class="form-check mb-3">
+            <input type="checkbox" class="form-check-input" name="medication_taken" id="medication_taken">
+            <label class="form-check-label" for="medication_taken">Medication Taken</label>
+        </div>
+
+
+        <button type="button" class="btn btn-primary" id="checkStabilityBtn">Check Stability</button>
+    </form>
+
+
+    <!-- Results -->
+    <div class="mt-4" id="stabilityResult" style="display:none;">
+        <h3>Stability Score: <span id="stabilityScoreValue"></span></h3>
+        <p><strong>Risk Prediction (English):</strong> <span id="riskEnglish"></span></p>
+        <p><strong>Risk Prediction (Hinglish):</strong> <span id="riskHinglish"></span></p>
+    </div>
+</div>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const btn = document.getElementById("checkStabilityBtn");
+    btn.addEventListener("click", function() {
+        const form = document.getElementById("patientForm");
+        const formData = new FormData(form);
+        const payload = {};
+
+
+        formData.forEach((value, key) => {
+            // Convert comma separated fields to array
+            if (["secondary_conditions","medications","allergies"].includes(key)) {
+                payload[key] = value ? value.split(",").map(v => v.trim()) : [];
+            } else if (key === "medication_taken") {
+                payload[key] = document.getElementById("medication_taken").checked;
+            } else if (["height_cm","weight_kg","systolic_bp","diastolic_bp","heart_rate","blood_glucose","sleep_hours","exercise_minutes","stress_level","water_intake_liters"].includes(key)) {
+                payload[key] = value ? parseFloat(value) : 0;
+            } else {
+                payload[key] = value;
+            }
+        });
+
+
+        fetch("/predict-patient/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": form.querySelector("[name=csrfmiddlewaretoken]").value
+            },
+            body: JSON.stringify(payload)
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("stabilityScoreValue").textContent = data.stability_score || "--";
+            document.getElementById("riskEnglish").textContent = data.risk_prediction?.english || "--";
+            document.getElementById("riskHinglish").textContent = data.risk_prediction?.hinglish || "--";
+            document.getElementById("stabilityResult").style.display = "block";
+        })
+        .catch(err => {
+            alert("Error fetching stability score: " + err);
+        });
+    });
+});
+</script>
+{% endblock content %}
+
+

@@ -4,6 +4,7 @@ from django.contrib import messages
 from .forms import CustomerRegisterationForm, LoginForm
 from django.contrib.auth import authenticate, login as auth_login, logout
 from django.contrib.auth.decorators import login_required
+from core.models import UserProfile
 
 # Create your views here.
 # def register(request):
@@ -64,6 +65,15 @@ def login_view(request):
                 if user.is_doctor:
                     return redirect('core:doctor-dashboard')
                 elif user.is_user:
+                    # Check if user profile is filled
+                    try:
+                        profile = UserProfile.objects.get(user=user)
+                        if not profile.is_filled:
+                            return redirect('core:complete-profile')
+                    except UserProfile.DoesNotExist:
+                        # Create empty profile if it doesn't exist
+                        UserProfile.objects.create(user=user, is_filled=False)
+                        return redirect('core:complete-profile')
                     return redirect('core:user-dashboard')
                 else:
                     # This will handle admins and other user types, you might want to redirect admins to an admin dashboard

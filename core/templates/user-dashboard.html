@@ -30,26 +30,86 @@
 
     <!-- Quick Actions -->
     <section class="quick-actions mb-4">
-        <div class="btn-group" role="group">
-            <button class="btn btn-outline-success" onclick="window.location.href=''">+ Today's Log</button>
-            <button class="btn btn-outline-primary" onclick="window.location.href=''">Stability Score</button>
-            <button class="btn btn-outline-secondary" onclick="window.location.href=''">Doctor Connect</button>
-            <button class="btn btn-outline-info" onclick="window.location.href=''">Join Community</button>
-            <button class="btn btn-outline-warning" onclick="window.location.href=''">My Goals</button>
+        <div class="row g-3">
+            <div class="col-md-2 col-6">
+                <button class="btn btn-outline-success w-100" onclick="window.location.href=''">
+                    <i class="ri-add-line me-1"></i>Today's Log
+                </button>
+            </div>
+            <div class="col-md-2 col-6">
+                <button class="btn btn-outline-primary w-100" onclick="window.location.href='{% url 'core:stability-check' %}'">
+                    <i class="ri-ai-line me-1"></i>Stability Score
+                </button>
+            </div>
+            <div class="col-md-2 col-6">
+                <button class="btn btn-outline-secondary w-100" onclick="window.location.href=''">
+                    <i class="ri-user-line me-1"></i>Doctor Connect
+                </button>
+            </div>
+            <div class="col-md-2 col-6">
+                <button class="btn btn-outline-info w-100" onclick="window.location.href='/forums/'">
+                    <i class="ri-group-line me-1"></i>Join Community
+                </button>
+            </div>
+            <div class="col-md-2 col-6">
+                <button class="btn btn-outline-warning w-100" onclick="window.location.href=''">
+                    <i class="ri-target-line me-1"></i>My Goals
+                </button>
+            </div>
+            <div class="col-md-2 col-6">
+                <button class="btn btn-outline-dark w-100" onclick="window.location.href='{% url 'core:edit-profile' %}'">
+                    <i class="ri-edit-line me-1"></i>Edit Profile
+                </button>
+            </div>
         </div>
     </section>
 
     <!-- Stability Overview -->
     <section class="stability-overview mb-4">
-        <h2>Stability Overview</h2>
-        {% if stability %}
-            <div id="stabilityChartContainer" data-score="{{ stability.score_value|default:0 }}">
-                <canvas id="stabilityChart" width="200" height="200"></canvas>
+        <div class="card shadow-sm">
+            <div class="card-header bg-gradient-primary text-white">
+                <h4 class="mb-0">
+                    <i class="ri-bar-chart-line me-2"></i>Health Stability Overview
+                </h4>
             </div>
-            <p class="mt-2">{{ stability.risk_prediction }}</p>
-        {% else %}
-            <p>No stability data available yet.</p>
-        {% endif %}
+            <div class="card-body">
+                {% if stability %}
+                    <div class="row align-items-center">
+                        <div class="col-md-4 text-center">
+                            <div class="display-4 fw-bold text-success">{{ stability.score_value|default:"--" }}</div>
+                            <div class="text-muted">Stability Score</div>
+                        </div>
+                        <div class="col-md-8">
+                            <h6 class="text-primary mb-2">Risk Assessment:</h6>
+                            <div class="alert alert-info">
+                                {% if stability.risk_prediction %}
+                                    {% if stability.risk_prediction.english %}
+                                        <strong>English:</strong> {{ stability.risk_prediction.english }}<br>
+                                    {% endif %}
+                                    {% if stability.risk_prediction.hinglish %}
+                                        <strong>Hinglish:</strong> {{ stability.risk_prediction.hinglish }}
+                                    {% endif %}
+                                {% else %}
+                                    {{ stability.risk_prediction|default:"No risk assessment available" }}
+                                {% endif %}
+                            </div>
+                            <small class="text-muted">
+                                Last updated: {{ stability.score_date|date:"M d, Y" }}
+                            </small>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="ri-bar-chart-line display-1 text-muted mb-3"></i>
+                        <h5 class="text-muted">No Stability Data Available</h5>
+                        <p class="text-muted">Complete a health stability check to see your personalized health insights.</p>
+                        <button class="btn btn-primary" onclick="window.location.href='{% url 'core:stability-check' %}'">
+                            <i class="ri-ai-line me-2"></i>Check Stability Now
+                        </button>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
     </section>
 
     <!-- Doctor Updates -->
@@ -76,7 +136,7 @@
         {% for post in posts %}
             <div class="card p-3 mb-2">
                 <strong>{{ post.user.first_name|default:post.user.username }}:</strong> {{ post.content }}
-                <a href="" class="btn btn-sm btn-outline-primary mt-2">Join Discussion</a>
+                <a href="/forums/" class="btn btn-sm btn-outline-primary mt-2">Join Discussion</a>
             </div>
         {% empty %}
             <p>No posts yet.</p>
