@@ -13,6 +13,7 @@ import json
 import re
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+import os
 
 # --------------------------
 # Home View
@@ -102,7 +103,7 @@ def predict_patient_view(request):
 
 
         # Groq API
-        GROQ_API_KEY = "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"
+        GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
         url = "https://api.groq.com/openai/v1/chat/completions"
 
 
