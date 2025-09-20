@@ -11,5 +11,11 @@ urlpatterns = [
     path('stability-check/', views.stability_view, name='stability-check'),
     path('predict-patient/', views.predict_patient_view, name='predict-patient'),
     path('edit-profile/', views.edit_profile_view, name='edit-profile'),
+    
+    # Daily Log URLs
+    path('daily-log/', views.daily_log_create, name='daily-log-create'),
+    path('daily-log/list/', views.daily_log_list, name='daily-log-list'),
+    path('daily-log/<int:log_id>/', views.daily_log_detail, name='daily-log-detail'),
+    path('daily-log/<int:log_id>/edit/', views.daily_log_edit, name='daily-log-edit'),
 ]
 

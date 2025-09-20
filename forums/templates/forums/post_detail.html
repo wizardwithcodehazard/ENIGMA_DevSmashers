@@ -1,35 +1,65 @@
 {% extends 'base.html' %}
 
+{% block extra_css %}
+{# A style block is required for hover effects and for styling Django's generated form fields. #}
+<style>
+    .btn-primary-custom {
+        display: inline-block; font-weight: 600; color: #fff; background-color: #28a745; text-align: center; text-decoration: none; border: 1px solid transparent; padding: 10px 25px; font-size: 1rem; border-radius: 8px; cursor: pointer; transition: opacity 0.2s ease;
+    }
+    .btn-primary-custom:hover {
+        opacity: 0.85;
+    }
+    .btn-back-custom:hover {
+        text-decoration: underline !important;
+    }
+    .comment-form-section form p {
+        margin-bottom: 1rem;
+    }
+    .comment-form-section textarea {
+        display: block; width: 100%; padding: 12px 15px; font-size: 1rem; border: 1px solid #ced4da; border-radius: 8px;
+    }
+</style>
+{% endblock extra_css %}
+
 {% block content %}
-<div class="container forum-container">
-    <div class="post-detail-card">
-        <h1 class="post-title">{{ post.title }}</h1>
-        <p class="post-meta">by {{ post.author.username }} on {{ post.created_at|date:"F d, Y" }}</p>
-        <div class="post-content">
+<div style="max-width: 960px; margin: 40px auto; padding: 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+    
+    <div style="background: #fff; border: 1px solid #dee2e6; border-radius: 12px; padding: 30px; margin-bottom: 35px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+        <h1 style="font-size: 2.5rem; font-weight: 700; color: #004d40; line-height: 1.2; margin: 0;">{{ post.title }}</h1>
+        <p style="font-size: 0.9rem; color: #6c757d; margin-top: 15px; margin-bottom: 20px;">by {{ post.author.username }} on {{ post.created_at|date:"F d, Y" }}</p>
+        <div style="border-top: 1px solid #dee2e6; padding-top: 20px; line-height: 1.7; font-size: 1.1rem; color: #212529;">
             {{ post.content|linebreaks }}
         </div>
     </div>
 
-    <div class="comments-section">
-        <h2>Comments</h2>
+    <div style="margin-bottom: 35px;">
+        <h2 style="font-weight: 600; font-size: 1.8rem; color: #004d40; border-bottom: 1px solid #dee2e6; padding-bottom: 15px; margin-bottom: 25px;">
+            {{ comments.count }} Comment{{ comments.count|pluralize }}
+        </h2>
+
         {% for comment in comments %}
-            <div class="comment-card">
-                <p class="comment-meta"><strong>{{ comment.author.username }}</strong> said on {{ comment.created_at|date:"F d, Y" }}</p>
-                <p>{{ comment.content|linebreaks }}</p>
+            <div style="background: #fff; border: 1px solid #dee2e6; border-left: 4px solid #28a745; border-radius: 8px; padding: 20px; margin-bottom: 15px;">
+                <p style="font-size: 0.95rem; color: #6c757d; margin: 0;">
+                    <strong style="color: #212529;">{{ comment.author.username }}</strong> said on {{ comment.created_at|date:"F d, Y" }}
+                </p>
+                <p style="margin-top: 8px; margin-bottom: 0; line-height: 1.6; color: #212529;">
+                    {{ comment.content|linebreaks }}
+                </p>
             </div>
         {% empty %}
-            <p>No comments yet. Be the first to reply!</p>
+            <p style="color: #6c757d; text-align: center; padding: 20px;">No comments yet. Be the first to reply!</p>
         {% endfor %}
     </div>
 
-    <div class="comment-form-section">
-    <h3>Add a Comment</h3>
-    <form method="post" novalidate>
-        {% csrf_token %}
-        {{ comment_form.as_p }}
-        <button type="submit" class="btn btn-primary mt-2">Post Comment</button>
-    </form>
-</div>
-     <a href="{% url 'topic_post_list' post.topic.slug %}" class="btn-back">← Back to Posts</a>
+    <div class="comment-form-section" style="background: #f8f9fa; padding: 30px; border-radius: 12px; border: 1px solid #dee2e6;">
+        <h3 style="margin-top: 0; font-weight: 600; color: #004d40;">Add a Comment</h3>
+        <form method="post" novalidate>
+            {% csrf_token %}
+            {{ comment_form.as_p }}
+            <button type="submit" class="btn-primary-custom">Post Comment</button>
+        </form>
+    </div>
+
+    <a href="{% url 'topic_post_list' post.topic.slug %}" class="btn-back-custom" style="display: inline-block; margin-top: 25px; color: #004d40; text-decoration: none; font-weight: 500;">← Back to Posts</a>
 </div>
 {% endblock %}

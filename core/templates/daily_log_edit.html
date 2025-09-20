@@ -1,0 +1,219 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Edit Daily Log - {{ daily_log.date|date:"M d, Y" }} - VitalCircle{% endblock title %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-lg border-0 rounded-lg">
+                <div class="card-header bg-warning text-dark text-center py-3">
+                    <h3 class="fw-bold mb-1">
+                        <i class="ri-edit-line me-2"></i>
+                        Edit Daily Log
+                    </h3>
+                    <p class="mb-0">{{ daily_log.date|date:"F d, Y" }}</p>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        <!-- Physical Measurements -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h5 class="text-primary mb-3">
+                                    <i class="ri-heart-pulse-line me-2"></i>Physical Measurements
+                                </h5>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="{{ form.weight_kg.id_for_label }}" class="form-label">{{ form.weight_kg.label }}</label>
+                                {{ form.weight_kg }}
+                                {% if form.weight_kg.help_text %}
+                                    <div class="form-text">{{ form.weight_kg.help_text }}</div>
+                                {% endif %}
+                                {% for error in form.weight_kg.errors %}
+                                    <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="{{ form.systolic_bp.id_for_label }}" class="form-label">{{ form.systolic_bp.label }}</label>
+                                {{ form.systolic_bp }}
+                                {% for error in form.systolic_bp.errors %}
+                                    <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="{{ form.diastolic_bp.id_for_label }}" class="form-label">{{ form.diastolic_bp.label }}</label>
+                                {{ form.diastolic_bp }}
+                                {% for error in form.diastolic_bp.errors %}
+                                    <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="{{ form.heart_rate.id_for_label }}" class="form-label">{{ form.heart_rate.label }}</label>
+                                {{ form.heart_rate }}
+                                {% for error in form.heart_rate.errors %}
+                                    <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="{{ form.blood_glucose.id_for_label }}" class="form-label">{{ form.blood_glucose.label }}</label>
+                                {{ form.blood_glucose }}
+                                {% for error in form.blood_glucose.errors %}
+                                    <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="{{ form.temperature.id_for_label }}" class="form-label">{{ form.temperature.label }}</label>
+                                {{ form.temperature }}
+                                {% for error in form.temperature.errors %}
+                                    <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- Lifestyle Factors -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h5 class="text-primary mb-3">
+                                    <i class="ri-run-line me-2"></i>Lifestyle Factors
+                                </h5>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="{{ form.sleep_hours.id_for_label }}" class="form-label">{{ form.sleep_hours.label }}</label>
+                                {{ form.sleep_hours }}
+                                {% for error in form.sleep_hours.errors %}
+                                    <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="{{ form.exercise_minutes.id_for_label }}" class="form-label">{{ form.exercise_minutes.label }}</label>
+                                {{ form.exercise_minutes }}
+                                {% for error in form.exercise_minutes.errors %}
+                                    <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="{{ form.steps_count.id_for_label }}" class="form-label">{{ form.steps_count.label }}</label>
+                                {{ form.steps_count }}
+                                {% for error in form.steps_count.errors %}
+                                    <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="{{ form.water_intake_liters.id_for_label }}" class="form-label">{{ form.water_intake_liters.label }}</label>
+                                {{ form.water_intake_liters }}
+                                {% for error in form.water_intake_liters.errors %}
+                                    <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.stress_level.id_for_label }}" class="form-label">{{ form.stress_level.label }}</label>
+                                {{ form.stress_level }}
+                                {% if form.stress_level.help_text %}
+                                    <div class="form-text">{{ form.stress_level.help_text }}</div>
+                                {% endif %}
+                                {% for error in form.stress_level.errors %}
+                                    <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.mood_rating.id_for_label }}" class="form-label">{{ form.mood_rating.label }}</label>
+                                {{ form.mood_rating }}
+                                {% if form.mood_rating.help_text %}
+                                    <div class="form-text">{{ form.mood_rating.help_text }}</div>
+                                {% endif %}
+                                {% for error in form.mood_rating.errors %}
+                                    <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- Symptoms and Notes -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h5 class="text-primary mb-3">
+                                    <i class="ri-notes-line me-2"></i>Symptoms & Notes
+                                </h5>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="{{ form.symptoms.id_for_label }}" class="form-label">{{ form.symptoms.label }}</label>
+                                {{ form.symptoms }}
+                                {% if form.symptoms.help_text %}
+                                    <div class="form-text">{{ form.symptoms.help_text }}</div>
+                                {% endif %}
+                                {% for error in form.symptoms.errors %}
+                                    <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="{{ form.diet_notes.id_for_label }}" class="form-label">{{ form.diet_notes.label }}</label>
+                                {{ form.diet_notes }}
+                                {% if form.diet_notes.help_text %}
+                                    <div class="form-text">{{ form.diet_notes.help_text }}</div>
+                                {% endif %}
+                                {% for error in form.diet_notes.errors %}
+                                    <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="{{ form.notes.id_for_label }}" class="form-label">{{ form.notes.label }}</label>
+                                {{ form.notes }}
+                                {% if form.notes.help_text %}
+                                    <div class="form-text">{{ form.notes.help_text }}</div>
+                                {% endif %}
+                                {% for error in form.notes.errors %}
+                                    <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            <div class="col-12 mb-3">
+                                <div class="form-check">
+                                    {{ form.medication_taken }}
+                                    <label class="form-check-label" for="{{ form.medication_taken.id_for_label }}">
+                                        {{ form.medication_taken.label }}
+                                    </label>
+                                </div>
+                                {% for error in form.medication_taken.errors %}
+                                    <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'core:daily-log-detail' daily_log.id %}" class="btn btn-outline-secondary me-md-2">
+                                <i class="ri-eye-line me-1"></i>View Details
+                            </a>
+                            <a href="{% url 'core:daily-log-list' %}" class="btn btn-outline-secondary me-md-2">
+                                <i class="ri-arrow-left-line me-1"></i>Back to List
+                            </a>
+                            <button type="submit" class="btn btn-warning">
+                                <i class="ri-save-line me-1"></i>Update Log
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Form validation
+(function() {
+    'use strict';
+    window.addEventListener('load', function() {
+        var forms = document.getElementsByClassName('needs-validation');
+        var validation = Array.prototype.filter.call(forms, function(form) {
+            form.addEventListener('submit', function(event) {
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    }, false);
+})();
+</script>
+{% endblock content %}

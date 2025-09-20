@@ -7,13 +7,12 @@ from .models import (
     ForumPost, UserGoal, Achievement, SupportGroup, GroupMembership,
     Clinician
 )
-from .forms import UserProfileForm
+from .forms import UserProfileForm, DailyLogForm
 import requests
 import json
 import re
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-import os
 
 # --------------------------
 # Home View
@@ -65,6 +64,11 @@ def dashboard_view(request):
     goals = UserGoal.objects.filter(user=user)
     achievements = Achievement.objects.filter(user=user).order_by('-achieved_at')[:5]
 
+    # Recent Daily Logs (last 7 days)
+    from datetime import date, timedelta
+    week_ago = date.today() - timedelta(days=7)
+    recent_daily_logs = DailyLog.objects.filter(user=user, log_date__gte=week_ago).order_by('-log_date')[:7]
+
     context = {
         "profile": profile,
         "latest_log": latest_log,
@@ -74,6 +78,7 @@ def dashboard_view(request):
         "posts": posts,
         "goals": goals,
         "achievements": achievements,
+        "recent_daily_logs": recent_daily_logs,
     }
 
     return render(request, "user-dashboard.html", context)
@@ -103,7 +108,7 @@ def predict_patient_view(request):
 
 
         # Groq API
-        GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
+        GROQ_API_KEY = "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"
         url = "https://api.groq.com/openai/v1/chat/completions"
 
 
@@ -256,3 +261,93 @@ def edit_profile_view(request):
         'profile': profile,
     }
     return render(request, 'edit_profile.html', context)
+
+
+# --------------------------
+# Daily Log Views
+# --------------------------
+
+@login_required
+def daily_log_create(request):
+    """Create or update today's daily log"""
+    from datetime import date
+    
+    today = date.today()
+    
+    # Check if user already has a log for today
+    try:
+        daily_log = DailyLog.objects.get(user=request.user, log_date=today)
+        # If log exists, redirect to edit
+        return redirect('core:daily-log-edit', log_id=daily_log.id)
+    except DailyLog.DoesNotExist:
+        daily_log = None
+    
+    if request.method == 'POST':
+        form = DailyLogForm(request.POST, instance=daily_log)
+        if form.is_valid():
+            daily_log = form.save(commit=False)
+            daily_log.user = request.user
+            daily_log.log_date = today
+            daily_log.save()
+            messages.success(request, 'Daily log saved successfully!')
+            return redirect('core:daily-log-list')
+    else:
+        form = DailyLogForm(instance=daily_log)
+    
+    context = {
+        'form': form,
+        'daily_log': daily_log,
+        'today': today,
+    }
+    return render(request, 'daily_log_create.html', context)
+
+
+@login_required
+def daily_log_edit(request, log_id):
+    """Edit an existing daily log"""
+    try:
+        daily_log = DailyLog.objects.get(id=log_id, user=request.user)
+    except DailyLog.DoesNotExist:
+        messages.error(request, 'Daily log not found.')
+        return redirect('core:daily-log-list')
+    
+    if request.method == 'POST':
+        form = DailyLogForm(request.POST, instance=daily_log)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Daily log updated successfully!')
+            return redirect('core:daily-log-list')
+    else:
+        form = DailyLogForm(instance=daily_log)
+    
+    context = {
+        'form': form,
+        'daily_log': daily_log,
+    }
+    return render(request, 'daily_log_edit.html', context)
+
+
+@login_required
+def daily_log_list(request):
+    """List all daily logs for the user"""
+    daily_logs = DailyLog.objects.filter(user=request.user).order_by('-log_date')
+    
+    context = {
+        'daily_logs': daily_logs,
+    }
+    return render(request, 'daily_log_list.html', context)
+
+
+@login_required
+def daily_log_detail(request, log_id):
+    """View details of a specific daily log"""
+    try:
+        daily_log = DailyLog.objects.get(id=log_id, user=request.user)
+    except DailyLog.DoesNotExist:
+        messages.error(request, 'Daily log not found.')
+        return redirect('core:daily-log-list')
+    
+    context = {
+        'daily_log': daily_log,
+    }
+    return render(request, 'daily_log_detail.html', context)

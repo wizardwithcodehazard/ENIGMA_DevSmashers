@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Daily Health Logs - VitalCircle{% endblock title %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">
+            <i class="ri-calendar-line me-2"></i>Daily Health Logs
+        </h2>
+        <a href="{% url 'core:daily-log-create' %}" class="btn btn-primary">
+            <i class="ri-add-line me-1"></i>Add Today's Log
+        </a>
+    </div>
+
+    {% if daily_logs %}
+        <div class="row">
+            {% for log in daily_logs %}
+                <div class="col-lg-6 col-xl-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-header bg-light">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h6 class="mb-0 text-primary">
+                                    <i class="ri-calendar-check-line me-1"></i>
+                                    {{ log.date|date:"M d, Y" }}
+                                </h6>
+                                <span class="badge bg-{% if log.date == today %}success{% else %}secondary{% endif %}">
+                                    {% if log.date == today %}Today{% else %}{{ log.date|timesince }} ago{% endif %}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-2 mb-3">
+                                {% if log.weight_kg %}
+                                    <div class="col-6">
+                                        <small class="text-muted">Weight</small>
+                                        <div class="fw-bold">{{ log.weight_kg }} kg</div>
+                                    </div>
+                                {% endif %}
+                                {% if log.blood_pressure_systolic and log.blood_pressure_diastolic %}
+                                    <div class="col-6">
+                                        <small class="text-muted">Blood Pressure</small>
+                                        <div class="fw-bold">{{ log.blood_pressure_systolic }}/{{ log.blood_pressure_diastolic }}</div>
+                                    </div>
+                                {% endif %}
+                                {% if log.heart_rate %}
+                                    <div class="col-6">
+                                        <small class="text-muted">Heart Rate</small>
+                                        <div class="fw-bold">{{ log.heart_rate }} BPM</div>
+                                    </div>
+                                {% endif %}
+                                {% if log.blood_glucose %}
+                                    <div class="col-6">
+                                        <small class="text-muted">Blood Glucose</small>
+                                        <div class="fw-bold">{{ log.blood_glucose }} mg/dL</div>
+                                    </div>
+                                {% endif %}
+                                {% if log.sleep_hours %}
+                                    <div class="col-6">
+                                        <small class="text-muted">Sleep</small>
+                                        <div class="fw-bold">{{ log.sleep_hours }}h</div>
+                                    </div>
+                                {% endif %}
+                                {% if log.exercise_minutes %}
+                                    <div class="col-6">
+                                        <small class="text-muted">Exercise</small>
+                                        <div class="fw-bold">{{ log.exercise_minutes }} min</div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            {% if log.stress_level or log.mood_rating %}
+                                <div class="row g-2 mb-3">
+                                    {% if log.stress_level %}
+                                        <div class="col-6">
+                                            <small class="text-muted">Stress Level</small>
+                                            <div class="d-flex align-items-center">
+                                                <div class="progress flex-grow-1 me-2" style="height: 8px;">
+                                                    <div class="progress-bar bg-{% if log.stress_level <= 3 %}success{% elif log.stress_level <= 6 %}warning{% else %}danger{% endif %}" 
+                                                         style="width: {{ log.stress_level|floatformat:0}}%"></div>
+                                                </div>
+                                                <small class="fw-bold">{{ log.stress_level }}/10</small>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                    {% if log.mood_rating %}
+                                        <div class="col-6">
+                                            <small class="text-muted">Mood</small>
+                                            <div class="d-flex align-items-center">
+                                                <div class="progress flex-grow-1 me-2" style="height: 8px;">
+                                                    <div class="progress-bar bg-{% if log.mood_rating >= 7 %}success{% elif log.mood_rating >= 4 %}warning{% else %}danger{% endif %}" 
+                                                         style="width: {{ log.mood_rating|floatformat:0 }}%"></div>
+                                                </div>
+                                                <small class="fw-bold">{{ log.mood_rating }}/10</small>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+
+                            {% if log.symptoms %}
+                                <div class="mb-2">
+                                    <small class="text-muted">Symptoms</small>
+                                    <div class="small text-truncate">{{ log.symptoms|truncatechars:50 }}</div>
+                                </div>
+                            {% endif %}
+
+                            {% if log.medication_taken %}
+                                <div class="mb-2">
+                                    <span class="badge bg-info">
+                                        <i class="ri-medicine-bottle-line me-1"></i>Medication Taken
+                                    </span>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="card-footer bg-transparent">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">
+                                    <i class="ri-time-line me-1"></i>
+                                    {{ log.created_at|date:"g:i A" }}
+                                </small>
+                                <div class="btn-group btn-group-sm">
+                                    <a href="{% url 'core:daily-log-detail' log.id %}" class="btn btn-outline-primary btn-sm">
+                                        <i class="ri-eye-line me-1"></i>View
+                                    </a>
+                                    <a href="{% url 'core:daily-log-edit' log.id %}" class="btn btn-outline-secondary btn-sm">
+                                        <i class="ri-edit-line me-1"></i>Edit
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center py-5">
+            <i class="ri-calendar-line display-1 text-muted mb-3"></i>
+            <h4 class="text-muted">No Daily Logs Yet</h4>
+            <p class="text-muted mb-4">Start tracking your daily health data to see your progress over time.</p>
+            <a href="{% url 'core:daily-log-create' %}" class="btn btn-primary">
+                <i class="ri-add-line me-2"></i>Create Your First Log
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock content %}

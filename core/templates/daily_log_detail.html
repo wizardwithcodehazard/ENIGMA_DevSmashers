@@ -1,0 +1,255 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Daily Log - {{ daily_log.date|date:"M d, Y" }} - VitalCircle{% endblock title %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-lg border-0 rounded-lg">
+                <div class="card-header bg-primary text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="mb-1">
+                                <i class="ri-calendar-check-line me-2"></i>
+                                Daily Health Log
+                            </h3>
+                            <p class="mb-0">{{ daily_log.date|date:"F d, Y" }}</p>
+                        </div>
+                        <div class="btn-group">
+                            <a href="{% url 'core:daily-log-edit' daily_log.id %}" class="btn btn-light">
+                                <i class="ri-edit-line me-1"></i>Edit
+                            </a>
+                            <a href="{% url 'core:daily-log-list' %}" class="btn btn-outline-light">
+                                <i class="ri-arrow-left-line me-1"></i>Back to List
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row">
+                        <!-- Physical Measurements -->
+                        <div class="col-lg-6 mb-4">
+                            <h5 class="text-primary mb-3">
+                                <i class="ri-heart-pulse-line me-2"></i>Physical Measurements
+                            </h5>
+                            <div class="row g-3">
+                                {% if daily_log.weight_kg %}
+                                    <div class="col-6">
+                                        <div class="card bg-light">
+                                            <div class="card-body text-center">
+                                                <i class="ri-scales-line text-primary mb-2" style="font-size: 1.5rem;"></i>
+                                                <h6 class="card-title text-muted">Weight</h6>
+                                                <h4 class="text-primary mb-0">{{ daily_log.weight_kg }} kg</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                
+                                {% if daily_log.blood_pressure_systolic and daily_log.blood_pressure_diastolic %}
+                                    <div class="col-6">
+                                        <div class="card bg-light">
+                                            <div class="card-body text-center">
+                                                <i class="ri-heart-pulse-line text-primary mb-2" style="font-size: 1.5rem;"></i>
+                                                <h6 class="card-title text-muted">Blood Pressure</h6>
+                                                <h4 class="text-primary mb-0">{{ daily_log.blood_pressure_systolic }}/{{ daily_log.blood_pressure_diastolic }}</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                
+                                {% if daily_log.heart_rate %}
+                                    <div class="col-6">
+                                        <div class="card bg-light">
+                                            <div class="card-body text-center">
+                                                <i class="ri-heart-3-line text-primary mb-2" style="font-size: 1.5rem;"></i>
+                                                <h6 class="card-title text-muted">Heart Rate</h6>
+                                                <h4 class="text-primary mb-0">{{ daily_log.heart_rate }} BPM</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                
+                                {% if daily_log.blood_glucose %}
+                                    <div class="col-6">
+                                        <div class="card bg-light">
+                                            <div class="card-body text-center">
+                                                <i class="ri-drop-line text-primary mb-2" style="font-size: 1.5rem;"></i>
+                                                <h6 class="card-title text-muted">Blood Glucose</h6>
+                                                <h4 class="text-primary mb-0">{{ daily_log.blood_glucose }} mg/dL</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                
+                                {% if daily_log.temperature %}
+                                    <div class="col-6">
+                                        <div class="card bg-light">
+                                            <div class="card-body text-center">
+                                                <i class="ri-temp-cold-line text-primary mb-2" style="font-size: 1.5rem;"></i>
+                                                <h6 class="card-title text-muted">Temperature</h6>
+                                                <h4 class="text-primary mb-0">{{ daily_log.temperature }}°F</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Lifestyle Factors -->
+                        <div class="col-lg-6 mb-4">
+                            <h5 class="text-primary mb-3">
+                                <i class="ri-run-line me-2"></i>Lifestyle Factors
+                            </h5>
+                            <div class="row g-3">
+                                {% if daily_log.sleep_hours %}
+                                    <div class="col-6">
+                                        <div class="card bg-light">
+                                            <div class="card-body text-center">
+                                                <i class="ri-moon-line text-primary mb-2" style="font-size: 1.5rem;"></i>
+                                                <h6 class="card-title text-muted">Sleep</h6>
+                                                <h4 class="text-primary mb-0">{{ daily_log.sleep_hours }}h</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                
+                                {% if daily_log.exercise_minutes %}
+                                    <div class="col-6">
+                                        <div class="card bg-light">
+                                            <div class="card-body text-center">
+                                                <i class="ri-run-line text-primary mb-2" style="font-size: 1.5rem;"></i>
+                                                <h6 class="card-title text-muted">Exercise</h6>
+                                                <h4 class="text-primary mb-0">{{ daily_log.exercise_minutes }} min</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                
+                                {% if daily_log.water_intake_liters %}
+                                    <div class="col-6">
+                                        <div class="card bg-light">
+                                            <div class="card-body text-center">
+                                                <i class="ri-drop-line text-primary mb-2" style="font-size: 1.5rem;"></i>
+                                                <h6 class="card-title text-muted">Water Intake</h6>
+                                                <h4 class="text-primary mb-0">{{ daily_log.water_intake_liters }}L</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                
+                                {% if daily_log.stress_level %}
+                                    <div class="col-6">
+                                        <div class="card bg-light">
+                                            <div class="card-body text-center">
+                                                <i class="ri-emotion-line text-primary mb-2" style="font-size: 1.5rem;"></i>
+                                                <h6 class="card-title text-muted">Stress Level</h6>
+                                                <div class="d-flex align-items-center justify-content-center">
+                                                    <div class="progress me-2" style="width: 60px; height: 8px;">
+                                                        <div class="progress-bar bg-{% if daily_log.stress_level <= 3 %}success{% elif daily_log.stress_level <= 6 %}warning{% else %}danger{% endif %}" 
+                                                             style="width: {{ daily_log.stress_level|floatformat:0 }}%"></div>
+                                                    </div>
+                                                    <span class="fw-bold">{{ daily_log.stress_level }}/10</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                
+                                {% if daily_log.mood_rating %}
+                                    <div class="col-6">
+                                        <div class="card bg-light">
+                                            <div class="card-body text-center">
+                                                <i class="ri-smile-line text-primary mb-2" style="font-size: 1.5rem;"></i>
+                                                <h6 class="card-title text-muted">Mood</h6>
+                                                <div class="d-flex align-items-center justify-content-center">
+                                                    <div class="progress me-2" style="width: 60px; height: 8px;">
+                                                        <div class="progress-bar bg-{% if daily_log.mood_rating >= 7 %}success{% elif daily_log.mood_rating >= 4 %}warning{% else %}danger{% endif %}" 
+                                                             style="width: {{ daily_log.mood_rating|floatformat:0 }}%"></div>
+                                                    </div>
+                                                    <span class="fw-bold">{{ daily_log.mood_rating }}/10</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Symptoms and Notes -->
+                    {% if daily_log.symptoms or daily_log.notes or daily_log.medication_taken %}
+                        <div class="row">
+                            <div class="col-12">
+                                <h5 class="text-primary mb-3">
+                                    <i class="ri-notes-line me-2"></i>Additional Information
+                                </h5>
+                            </div>
+                            
+                            {% if daily_log.symptoms %}
+                                <div class="col-md-6 mb-3">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h6 class="mb-0">
+                                                <i class="ri-alert-line me-2"></i>Symptoms
+                                            </h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <p class="mb-0">{{ daily_log.symptoms|linebreaks }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            
+                            {% if daily_log.notes %}
+                                <div class="col-md-6 mb-3">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h6 class="mb-0">
+                                                <i class="ri-file-text-line me-2"></i>Notes
+                                            </h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <p class="mb-0">{{ daily_log.notes|linebreaks }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            
+                            {% if daily_log.medication_taken %}
+                                <div class="col-12 mb-3">
+                                    <div class="alert alert-info">
+                                        <i class="ri-medicine-bottle-line me-2"></i>
+                                        <strong>Medication Taken:</strong> Yes, medication was taken on this day.
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    <!-- Timestamps -->
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <div class="row text-center">
+                                        <div class="col-md-6">
+                                            <small class="text-muted">Created</small>
+                                            <div class="fw-bold">{{ daily_log.created_at|date:"M d, Y g:i A" }}</div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <small class="text-muted">Last Updated</small>
+                                            <div class="fw-bold">{{ daily_log.updated_at|date:"M d, Y g:i A" }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

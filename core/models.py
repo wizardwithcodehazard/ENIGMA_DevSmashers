@@ -190,3 +190,54 @@ class Achievement(models.Model):
     achieved_at = models.DateTimeField(auto_now_add=True)
 
 
+class DailyLog(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    log_date = models.DateField(auto_now_add=True)  # Keep existing field name
+    
+    # Physical measurements - use existing field names where possible
+    weight_kg = models.FloatField(blank=True, null=True)
+    systolic_bp = models.IntegerField(blank=True, null=True)  # Keep existing field name
+    diastolic_bp = models.IntegerField(blank=True, null=True)  # Keep existing field name
+    heart_rate = models.IntegerField(blank=True, null=True)
+    blood_glucose = models.FloatField(blank=True, null=True)
+    temperature = models.FloatField(blank=True, null=True)
+    
+    # Lifestyle factors
+    sleep_hours = models.FloatField(blank=True, null=True)
+    exercise_minutes = models.IntegerField(blank=True, null=True)
+    steps_count = models.IntegerField(blank=True, null=True)  # Keep existing field
+    water_intake_liters = models.FloatField(blank=True, null=True)
+    stress_level = models.IntegerField(choices=[(i, i) for i in range(1, 6)], blank=True, null=True)  # Keep existing range
+    mood_rating = models.IntegerField(choices=[(i, i) for i in range(1, 11)], blank=True, null=True)  # New field
+    
+    # Symptoms and notes
+    symptoms = models.TextField(blank=True, null=True)
+    diet_notes = models.TextField(blank=True, null=True)  # Keep existing field
+    notes = models.TextField(blank=True, null=True)  # New field
+    medication_taken = models.BooleanField(default=False)
+    
+    # Timestamps
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)  # New field
+    
+    class Meta:
+        unique_together = ['user', 'log_date']  # Use existing field name
+        ordering = ['-log_date']
+    
+    def __str__(self):
+        return f"{self.user.username} - {self.log_date}"
+    
+    # Property to maintain compatibility with templates
+    @property
+    def date(self):
+        return self.log_date
+    
+    @property
+    def blood_pressure_systolic(self):
+        return self.systolic_bp
+    
+    @property
+    def blood_pressure_diastolic(self):
+        return self.diastolic_bp
+
+

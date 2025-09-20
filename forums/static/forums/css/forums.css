@@ -1,75 +1,101 @@
-/* forums/static/forums/css/forums.css */
+/* forums/static/forums/css/forums.css (Improvised Version) */
+
+/* === Theme & Variables === */
+:root {
+    --primary-green: #28a745;
+    --dark-green: #004d40;
+    --light-gray-bg: #f8f9fa;
+    --border-color: #dee2e6;
+    --text-dark: #212529;
+    --text-muted: #6c757d;
+    --card-shadow: 0 4px 6px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.1);
+    --card-shadow-hover: 0 7px 14px rgba(0,0,0,0.07), 0 3px 6px rgba(0,0,0,0.1);
+}
+
+/* === General & Typography === */
+body {
+    background-color: var(--light-gray-bg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: var(--text-dark);
+}
 
 .forum-container {
-    max-width: 900px;
+    max-width: 960px;
     margin: 40px auto;
     padding: 20px;
 }
 
 .page-title {
-    font-size: 2.5rem;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 5px;
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: var(--dark-green);
+    margin-bottom: 0.5rem;
+    text-align: center;
 }
 
 .page-subtitle {
-    font-size: 1.1rem;
-    color: #666;
-    margin-bottom: 30px;
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    margin-bottom: 40px;
+    text-align: center;
 }
 
-/* Topic List */
-.topic-list .topic-card {
+/* === Card Styles (Topic & Post Lists) === */
+.topic-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 25px;
+}
+
+.topic-card, .post-summary-card {
     background: #fff;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 15px;
-    transition: box-shadow 0.2s ease-in-out;
-}
-
-.topic-list .topic-card:hover {
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-}
-
-.topic-card h2 a {
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: var(--card-shadow);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
     text-decoration: none;
-    color: #0056b3;
+    display: block;
 }
 
-/* Post List */
-.post-summary-card {
-    background: #fff;
-    border: 1px solid #e0e0e0;
-    padding: 15px;
-    margin-bottom: 10px;
-    border-radius: 5px;
+.topic-card:hover, .post-summary-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--card-shadow-hover);
+}
+
+.topic-card h2 a, .post-summary-card h3 a {
+    text-decoration: none;
+    color: var(--dark-green);
+    font-size: 1.5rem;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.topic-card h2 a:hover, .post-summary-card h3 a:hover {
+    color: var(--primary-green);
 }
 
 .post-meta {
     font-size: 0.9rem;
-    color: #777;
+    color: var(--text-muted);
+    margin-top: 5px;
 }
 
-.btn-back {
-    display: inline-block;
-    margin-top: 20px;
-    color: #0056b3;
-    text-decoration: none;
-}
-
-/* Post Detail */
+/* === Post Detail & Comments === */
 .post-detail-card, .comment-card {
     background: #fff;
-    padding: 25px;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    margin-bottom: 20px;
+    padding: 30px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    margin-bottom: 25px;
+    box-shadow: var(--card-shadow);
 }
 
 .post-title {
-    font-size: 2rem;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--dark-green);
+    line-height: 1.2;
 }
 
 .post-content {
@@ -79,45 +105,93 @@
 }
 
 .comments-section h2 {
-    border-bottom: 2px solid #f0f0f0;
-    padding-bottom: 10px;
-    margin-bottom: 20px;
+    font-weight: 600;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 15px;
+    margin-bottom: 25px;
 }
 
+.comment-card {
+    border-left: 4px solid var(--primary-green);
+}
+
+.comment-meta {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+}
 .comment-meta strong {
-    color: #333;
+    color: var(--text-dark);
 }
 
-/* Forms */
+/* === Forms & Buttons === */
 .comment-form-section, .post-create-form {
-    background: #f9f9f9;
-    padding: 20px;
-    border-radius: 8px;
-    border: 1px solid #e0e0e0;
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--card-shadow);
 }
 
 .form-control {
+    display: block;
     width: 100%;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    margin-bottom: 10px;
+    padding: 12px 15px;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--text-dark);
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+    margin-bottom: 1rem;
+}
+
+.form-control:focus {
+    color: var(--text-dark);
+    background-color: #fff;
+    border-color: var(--primary-green);
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.25);
+}
+
+.btn-primary, .btn-secondary {
+    display: inline-block;
+    font-weight: 600;
+    line-height: 1.5;
+    color: #fff;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+    cursor: pointer;
+    border: 1px solid transparent;
+    padding: 10px 25px;
+    font-size: 1rem;
+    border-radius: 8px;
+    transition: opacity 0.2s ease;
 }
 
 .btn-primary {
-    background-color: #007bff;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+    background-color: var(--primary-green);
+    border-color: var(--primary-green);
 }
 
 .btn-secondary {
-    background-color: #6c757d;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
+    background-color: var(--text-muted);
+    border-color: var(--text-muted);
+}
+
+.btn-primary:hover, .btn-secondary:hover {
+    opacity: 0.85;
+}
+
+.btn-back {
+    display: inline-block;
+    margin-top: 25px;
+    color: var(--dark-green);
     text-decoration: none;
+    font-weight: 500;
+}
+.btn-back:hover {
+    text-decoration: underline;
 }

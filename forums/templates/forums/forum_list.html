@@ -1,17 +1,62 @@
 {% extends 'base.html' %}
 
+{% block extra_css %}
+{# A style block is needed for the responsive grid layout and hover effects. #}
+<style>
+    .topic-list-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 30px;
+    }
+    .topic-card-link {
+        text-decoration: none;
+        color: inherit;
+    }
+    .topic-card-link .topic-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .topic-card-link:hover .topic-card {
+        transform: translateY(-8px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
+    }
+    .topic-card-link .topic-icon {
+        transition: transform 0.3s ease;
+    }
+    .topic-card-link:hover .topic-icon {
+        transform: translateX(5px);
+    }
+</style>
+{% endblock extra_css %}
+
 {% block content %}
-<div class="container forum-container">
-    <h1 class="page-title">Community Forums</h1>
-    <p class="page-subtitle">Select a topic to start discussing.</p>
-    <div class="topic-list">
+<div style="max-width: 1140px; margin: 40px auto; padding: 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+    
+    <div style="text-align: center; margin-bottom: 50px;">
+        <h1 style="font-size: 2.8rem; font-weight: 700; color: #004d40; margin-bottom: 0.5rem;">Community Forums</h1>
+        <p style="font-size: 1.2rem; color: #6c757d; max-width: 600px; margin: 0 auto;">A place to connect, share, and support one another.</p>
+    </div>
+
+    <div class="topic-list-grid">
         {% for topic in topics %}
-            <div class="topic-card">
-                <h2><a href="{% url 'topic_post_list' topic.slug %}">{{ topic.name }}</a></h2>
-                <p>{{ topic.description }}</p>
-            </div>
+            <a href="{% url 'topic_post_list' topic.slug %}" class="topic-card-link">
+                <div class="topic-card" style="background-color: #fff; border: 1px solid #e9ecef; border-radius: 12px; padding: 25px; height: 100%; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);">
+                    <div class="topic-card-content">
+                        <h3 style="font-size: 1.5rem; font-weight: 600; color: #004d40; margin-top: 0; margin-bottom: 10px;">{{ topic.name }}</h3>
+                        <p style="color: #6c757d; line-height: 1.6; margin-bottom: 20px;">{{ topic.description }}</p>
+                    </div>
+                    <div class="topic-card-footer" style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #e9ecef; padding-top: 15px; margin-top: auto;">
+                        <span style="font-size: 0.9rem; font-weight: 500; color: #28a745;">{{ topic.posts.count }} Post{{ topic.posts.count|pluralize }}</span>
+                        <span class="topic-icon" style="font-size: 1.5rem; color: #28a745;">
+                            <i class="ri-arrow-right-s-line"></i>
+                        </span>
+                    </div>
+                </div>
+            </a>
         {% empty %}
-            <p>No topics have been created yet.</p>
+            <div style="grid-column: 1 / -1; text-align: center; padding: 50px; background: #f8f9fa; border: 1px dashed #dee2e6; border-radius: 12px;">
+                <h4 style="color: #212529;">No Topics Yet</h4>
+                <p style="color: #6c757d;">An administrator can create discussion topics in the admin panel.</p>
+            </div>
         {% endfor %}
     </div>
 </div>
