@@ -93,8 +93,6 @@ Run the server:
 python manage.py runserver
 ```
 
-Access the web app at:
-👉 [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
 
 ---
 
